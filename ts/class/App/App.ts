@@ -9,7 +9,6 @@ export class App extends ANativeApp<tApp.initData, tApp.appConfig> {
         this.setRefreshStateInStorageHourSpan(0);
     }
 
-    protected _appConfig: tApp.appConfig;
     get AppConfig() {
         if (!this._appConfig) {
             this._appConfig =
