@@ -9,7 +9,7 @@
   "author": "CM Zhou",
   "description": "",
   "dependencies": {
-    "ts-react-app-native": "1.0.4",
+    "ts-react-app-native": "1.0.5",
     "react-native-viewpager": "^0.2.11"
   },
   "jest": {
