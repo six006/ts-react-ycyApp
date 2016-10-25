@@ -203,7 +203,7 @@ class Home extends baseNativeSceneComponent<props, state> {
             py: event.nativeEvent.pageY
         };
         if (this.state.activeShow) {
-            if (nowPosition.py < this.lastTouchPosition.py) {
+            if (this.lastTouchPosition.py - nowPosition.py > 5) {
                 this.setState(
                     {
                         activeShow: false
@@ -218,7 +218,7 @@ class Home extends baseNativeSceneComponent<props, state> {
             }
         }
         else {
-            if (nowPosition.py > this.lastTouchPosition.py) {
+            if (nowPosition.py - this.lastTouchPosition.py > 5) {
                 const offset: number = (this.refs['GoodsListView'] as GoodsListView).ListViewInstance.scrollProperties.offset;
                 if (offset < 5) {
                     this.setState(
@@ -259,45 +259,28 @@ class Home extends baseNativeSceneComponent<props, state> {
 
 
     private onGoodsLeftTypeRefresh = () => {
-        return f.AsyncOperation.run(
-            () => {
-                return this.getGoodsLeftTypeList(this.state.goodsTopTypeSelectId!);
-            }
-        );
+        return this.getGoodsLeftTypeList(this.state.goodsTopTypeSelectId!);
     }
 
     private onPageRefresh = () => {
-        return f.AsyncOperation.run(
-            () => {
-                return this.loadAllData();
-            }
-        );
+        return this.loadAllData();
     }
 
     private onGoodsRefresh = () => {
         this.nowGoodsListRowCount = this.goodsListPageSize;
-        return f.AsyncOperation.run(
-            () => {
-                return this.getGoodsList(this.state.goodsLeftTypeSelectId!);
-            }
-        );
+        return this.getGoodsList(this.state.goodsLeftTypeSelectId!);
     }
     private onGoodsEndReached = () => {
         if (!this.isGoodsListViewMounted) return;
-
         const nowCount = this.nowGoodsListRowCount;
         this.nowGoodsListRowCount += this.goodsListPageSize;
 
-        return f.AsyncOperation.run(
+        return this.getGoodsList(this.state.goodsLeftTypeSelectId!).then(
             () => {
-                return this.getGoodsList(this.state.goodsLeftTypeSelectId!).then(
-                    () => {
-                        if (!this.isUpdateGoodsListView && nowCount == this.nowGoodsListRowCount) {
-                            f.Prompt.promptToast('没有更多商品了！');
-                        }
-                        this.isUpdateGoodsListView = false;
-                    }
-                );
+                if (!this.isUpdateGoodsListView && nowCount == this.nowGoodsListRowCount) {
+                    /*f.Prompt.promptToast('没有更多商品了！');*/
+                }
+                this.isUpdateGoodsListView = false;
             }
         );
     }

@@ -40,7 +40,7 @@ export default class UserCoupon extends baseUserHasLoggedScene<props, state> {
         }
     }
     componentDidMount() {
-        this.getCouponList();
+        this.getCouponListAsyncOperation();
     }
     render() {
         const {list, unusedCount, invalidCount, usedCount} = this.state;
@@ -65,7 +65,7 @@ export default class UserCoupon extends baseUserHasLoggedScene<props, state> {
         this.nowCouponType = type;
         this.nowGoodsListRowCount = this.goodsListPageSize;
         this.isUpdateGoodsListView = true;
-        this.getCouponList();
+        this.getCouponListAsyncOperation();
     }
     private onEndReached = () => {
         if (!this.isGoodsListViewMounted) return;
@@ -76,7 +76,7 @@ export default class UserCoupon extends baseUserHasLoggedScene<props, state> {
         return this.getCouponList().then(
             () => {
                 if (!this.isUpdateGoodsListView && nowCount == this.nowGoodsListRowCount) {
-                    f.Prompt.promptToast('没有更多优惠券了！');
+                    /*f.Prompt.promptToast('没有更多优惠券了！');*/
                 }
                 this.isUpdateGoodsListView = false;
             }
@@ -89,24 +89,26 @@ export default class UserCoupon extends baseUserHasLoggedScene<props, state> {
         this.nowGoodsListRowCount = this.goodsListPageSize;
         return this.getCouponList()
     }
-    private getCouponList = () => {
+    private getCouponListAsyncOperation = () => {
         return f.AsyncOperation.run(
-            () => f.Request.getCouponList({ psize: this.nowGoodsListRowCount, type: this.nowCouponType }).then(
-                (data: any) => {
-                    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-                    const dataSource = ds.cloneWithRows(data.couList);
-                    this.setState({
-                        unusedCount: data.couponStat.unused,
-                        invalidCount: data.couponStat.invalid,
-                        usedCount: data.couponStat.used,
-                        list: dataSource
-                    });
-                    this.nowGoodsListRowCount = data.couList.length;
-                    this.isGoodsListViewMounted = true;
-                }
-            )
+            this.getCouponList
         )
     }
+
+    private getCouponList = () => f.Request.getCouponList({ psize: this.nowGoodsListRowCount, type: this.nowCouponType }).then(
+        (data: any) => {
+            const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+            const dataSource = ds.cloneWithRows(data.couList);
+            this.setState({
+                unusedCount: data.couponStat.unused,
+                invalidCount: data.couponStat.invalid,
+                usedCount: data.couponStat.used,
+                list: dataSource
+            });
+            this.nowGoodsListRowCount = data.couList.length;
+            this.isGoodsListViewMounted = true;
+        }
+    )
 }
 
 

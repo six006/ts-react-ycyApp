@@ -27,7 +27,7 @@ export default class UserCollection extends baseUserHasLoggedScene<props, state>
         }
     }
     componentDidMount() {
-        this.getGoodsList();
+        this.getGoodsListAsyncOperation();
     }
     render() {
         const {list} = this.state;
@@ -48,7 +48,7 @@ export default class UserCollection extends baseUserHasLoggedScene<props, state>
         return this.getGoodsList().then(
             () => {
                 if (!this.isUpdateGoodsListView && nowCount == this.nowGoodsListRowCount) {
-                    f.Prompt.promptToast('没有更多商品了！');
+                    /*f.Prompt.promptToast('没有更多商品了！');*/
                 }
                 this.isUpdateGoodsListView = false;
             }
@@ -59,19 +59,21 @@ export default class UserCollection extends baseUserHasLoggedScene<props, state>
         this.nowGoodsListRowCount = this.goodsListPageSize;
         return this.getGoodsList()
     }
-    private getGoodsList = () => {
+    private getGoodsListAsyncOperation = () => {
         return f.AsyncOperation.run(
-            () => f.Request.getUserCollectionGoodsList({ psize: this.nowGoodsListRowCount }).then(
-                (data: tScene.goodsList) => {
-                    this.setState({
-                        list: data
-                    });
-                    this.nowGoodsListRowCount = data.length;
-                    this.isGoodsListViewMounted = true;
-                }
-            )
+            this.getGoodsList
         )
     }
+
+    private getGoodsList = () => f.Request.getUserCollectionGoodsList({ psize: this.nowGoodsListRowCount }).then(
+        (data: tScene.goodsList) => {
+            this.setState({
+                list: data
+            });
+            this.nowGoodsListRowCount = data.length;
+            this.isGoodsListViewMounted = true;
+        }
+    )
 }
 
 

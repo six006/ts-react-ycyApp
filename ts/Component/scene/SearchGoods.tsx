@@ -56,7 +56,7 @@ export default class SearchGoods extends baseNativeSceneComponent<props, state> 
         return this.getGoodsList().then(
             () => {
                 if (!this.isUpdateGoodsListView && nowCount == this.nowGoodsListRowCount) {
-                    f.Prompt.promptToast('没有更多商品了！');
+                    /*f.Prompt.promptToast('没有更多商品了！');*/
                 }
                 this.isUpdateGoodsListView = false;
             }
@@ -74,24 +74,26 @@ export default class SearchGoods extends baseNativeSceneComponent<props, state> 
         this.isUpdateGoodsListView = true;
         this.nowGoodsListRowCount = this.goodsListPageSize;
         this.searchValue = this.state.searchValue!;
-        return this.getGoodsList();
+        return this.getGoodsListAsyncOperation();
     }
-    private getGoodsList = () => {
+    private getGoodsListAsyncOperation = () => {
         if (!this.searchValue) {
             this.nowGoodsListRowCount = 0;
         }
         return f.AsyncOperation.run(
-            () => f.Request.getGoodsList({ psize: this.nowGoodsListRowCount, goods_name: this.searchValue }).then(
-                (data: tScene.goodsList) => {
-                    this.setState({
-                        list: data
-                    });
-                    this.nowGoodsListRowCount = data.length;
-                    this.isGoodsListViewMounted = true;
-                }
-            )
+            this.getGoodsList
         )
     }
+
+    private getGoodsList = () => f.Request.getGoodsList({ psize: this.nowGoodsListRowCount, goods_name: this.searchValue }).then(
+        (data: tScene.goodsList) => {
+            this.setState({
+                list: data
+            });
+            this.nowGoodsListRowCount = data.length;
+            this.isGoodsListViewMounted = true;
+        }
+    )
 }
 
 

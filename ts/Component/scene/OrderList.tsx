@@ -60,7 +60,7 @@ export default class OrderList extends baseOrderScene<props, state> {
         }
     }
     componentDidMount() {
-        this.getOrderList();
+        this.getOrderListAsyncOperation();
     }
 
     render() {
@@ -122,7 +122,7 @@ export default class OrderList extends baseOrderScene<props, state> {
         this.getOrderList().then(
             () => {
                 if (!this.isListViewUpdate && nowCount == this.orderListPostData.psize) {
-                    f.Prompt.promptToast('没有更多订单了！');
+                    /*f.Prompt.promptToast('没有更多订单了！');*/
                 }
 
                 this.isListViewUpdate = false;
@@ -141,7 +141,7 @@ export default class OrderList extends baseOrderScene<props, state> {
                 etime: searchKeyValues!.etime
             }
             this.isListViewUpdate = true;
-            this.getOrderList();
+            this.getOrderListAsyncOperation();
             (this.refs['DrawerLayout'] as DrawerLayout).showDrawerLayout(false);
         }
         catch (e) {
@@ -232,20 +232,7 @@ export default class OrderList extends baseOrderScene<props, state> {
             () => {
                 f.AsyncOperation.run(
                     () => f.Request.cancelOrder({ order_id: order.order_id }).then(
-                        () => {
-                            return f.Request.getOrderList(this.orderListPostData).then(
-                                (data: tScene.OrderList) => {
-                                    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-                                    const dataSource = ds.cloneWithRows(data);
-                                    this.setState(
-                                        {
-                                            list: dataSource
-                                        }
-                                    );
-                                    this.orderListPostData.psize = data.length;
-                                }
-                            )
-                        }
+                        this.getOrderList
                     ),
                     () => {
                         f.Prompt.promptToast('订单取消成功!');
@@ -260,21 +247,25 @@ export default class OrderList extends baseOrderScene<props, state> {
         return this.getOrderList();
     }
 
-    private getOrderList = () => {
+    private getOrderListAsyncOperation = () => {
         return f.AsyncOperation.run(
-            () => f.Request.getOrderList(this.orderListPostData).then(
-                (data: tScene.OrderList) => {
-                    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-                    const dataSource = ds.cloneWithRows(data);
-                    this.setState(
-                        {
-                            list: dataSource
-                        }
-                    );
-                    this.orderListPostData.psize = data.length;
-                    this.isListViewMounted = true;
-                }
-            )
+            this.getOrderList
+        )
+    }
+
+    private getOrderList = () => {
+        return f.Request.getOrderList(this.orderListPostData).then(
+            (data: tScene.OrderList) => {
+                const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+                const dataSource = ds.cloneWithRows(data);
+                this.setState(
+                    {
+                        list: dataSource
+                    }
+                );
+                this.orderListPostData.psize = data.length;
+                this.isListViewMounted = true;
+            }
         )
     }
 }
