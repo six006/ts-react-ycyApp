@@ -8,7 +8,6 @@ import {
     ScrollView
 } from '../../common';
 import { baseNativeComponent } from '../../base';
-import GoodsSales from '../../scene/GoodsSales';
 import UserRecentBuy from '../../scene/UserRecentBuy';
 import UserCollection from '../../scene/UserCollection';
 import { Factory as f } from '../../../class/Factory';
@@ -42,10 +41,6 @@ export class GoodsTopTypeScrollView extends baseNativeComponent<props, state> {
         )
     }
     private onPress = (v: tScene.goodsTopType) => {
-        if (v.spell == 'chuxiao') {
-            f.Navigation.push({ component: GoodsSales });
-            return;
-        }
         if (v.spell == 'goumai') {
             f.Navigation.push({ component: UserRecentBuy });
             return;

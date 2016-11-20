@@ -55,7 +55,7 @@ export class OneCartGoods extends baseNativeComponent<props, state> {
                                 {errorText ? <Text style={styles.errorText}>({errorText})</Text> : null}
                             </Text>
                             <Text style={styles.desText}>{data.goods_spec}</Text>
-                            {data.is_sales == 1 || data.is_sales == '1' ? <Image source={require('./img/cuxiao.png')} resizeMode='stretch' style={styles.cuxiaoImg} /> : null}
+                            {parseInt(data.is_sales as any) > 0 ? <Image source={require('./img/cuxiao.png')} resizeMode='stretch' style={styles.cuxiaoImg} /> : null}
                             {data.is_time_limit == 1 || data.is_time_limit == '1' ? <Image source={require('./img/miaosha.png')} resizeMode='stretch' style={styles.cuxiaoImg} /> : null}
                             <Text style={styles.priceText}>￥<Text style={styles.priceTextBig}>{price.toFixed(2)}</Text>元/{data.goods_unit}</Text>
                         </View>

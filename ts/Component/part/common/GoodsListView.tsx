@@ -92,7 +92,8 @@ class OneGoods extends baseNativeComponent<oneGoodsProps, oneGoodsState> {
                 <View style={oneGoodsStyles.mainInfoView}>
                     <Text style={oneGoodsStyles.titleText}>{data.goods_name}</Text>
                     <Text style={oneGoodsStyles.desText}>{data.goods_spec}</Text>
-                    {data.is_sales == 1 || data.is_sales == '1' ? <Image source={require('./img/cuxiao.png')} resizeMode='stretch' style={oneGoodsStyles.cuxiaoImg} /> : null}
+                    {parseInt(data.is_sales as any) > 0 ? <Image source={require('./img/cuxiao.png')} resizeMode='stretch' style={oneGoodsStyles.cuxiaoImg} /> : null}
+                    {data.is_time_limit == 1 || data.is_time_limit == '1' ? <Image source={require('./img/miaosha.png')} resizeMode='stretch' style={oneGoodsStyles.cuxiaoImg} /> : null}
                     <Text style={oneGoodsStyles.priceText}>￥<Text style={oneGoodsStyles.priceTextBig}>{data.min_price}</Text>元/{data.goods_unit}</Text>
                 </View>
                 <View style={oneGoodsStyles.rightButtonView}>
@@ -220,7 +221,6 @@ const oneGoodsStyles = StyleSheet.create<{
     desText: {
         fontSize: f.Device.getActualSize(7),
         color: '#6a6a6a',
-        marginBottom: f.Device.getActualSize(3)
     },
     priceText: {
         fontSize: f.Device.getActualSize(7),
@@ -231,6 +231,7 @@ const oneGoodsStyles = StyleSheet.create<{
         fontSize: f.Device.getActualSize(9)
     },
     cuxiaoImg: {
+        marginTop: f.Device.getActualSize(3),
         width: f.Device.getActualSize(25),
         height: f.Device.getActualSize(10)
     },

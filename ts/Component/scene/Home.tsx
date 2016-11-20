@@ -14,7 +14,6 @@ import {
     GoodsLeftTypeScrollView,
     TopSearchBar
 } from '../part/Home';
-import GoodsSales from './GoodsSales';
 import { GoodsListView } from '../part/common';
 import { Factory as f } from '../../class/Factory';
 import { strHp, arrayHp } from '../../helper';
@@ -83,7 +82,7 @@ class Home extends baseNativeSceneComponent<props, state> {
             (topTypeList: tScene.goodsTypeList) => {
                 let selectId = '';
 
-                const ms = arrayHp.find(topTypeList, { spell: 'miaosha' });
+                const ms = arrayHp.find(topTypeList, { spell: 'miaosha' }) || arrayHp.find(topTypeList, { spell: 'chuxiao' });
 
                 if (ms) {
                     selectId = ms.cat_id;
@@ -334,13 +333,10 @@ class Home extends baseNativeSceneComponent<props, state> {
             }
         }
         else if (type == 'chuxiao') {
+            f.Navigation.pop();
+            const id = '-3';
             if (arrayHp.find(this.state.goodsTopTypeList!, { spell: 'chuxiao' })) {
-                f.Navigation.replace({
-                    component: GoodsSales
-                });
-            }
-            else {
-                f.Navigation.pop();
+                this.onGoodsTopTypeSelectOne(id);
             }
         }
     }
